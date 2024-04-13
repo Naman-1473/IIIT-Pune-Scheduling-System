@@ -1,7 +1,7 @@
 import { signupAPI } from "../utils/constants";
 import { Link, useNavigate } from "react-router-dom";
 import { useState , useEffect } from "react";
-
+import Cookies from 'js-cookie'
 const Signup = ()=>{
     const navigate = useNavigate(); 
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -27,13 +27,15 @@ const Signup = ()=>{
               },
               body: JSON.stringify(data)
             });
-        
             if (!response.ok) {
               throw new Error('Network response was not ok');
             }else{
                 const responseData = await response.json();
-                // Store the token in local storage
-                localStorage.setItem('token', responseData.data.accessToken);
+                console.log(responseData)
+
+                Cookies.set('accessToken', responseData.data.accessToken); 
+                Cookies.set('refreshToken',responseData.data.refreshToken);
+
                 localStorage.setItem('userData', JSON.stringify(responseData));
                 setIsLoggedIn(true); 
             }

@@ -7,7 +7,7 @@ const Home = () =>{
     return(
         <div className="h-screen">
             <Navbar/>
-            <div className="flex justify-evenly items-center h-5/6">
+            <div className="flex justify-evenly items-center h-5/6 bg-gray-200">
                 <InfoCard name="Professors" image={professors}/>
                 <InfoCard name="Classes" image={students}/>
                 <InfoCard name="Facilities" image={facilities}/>

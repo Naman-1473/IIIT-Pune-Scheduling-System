@@ -1,6 +1,30 @@
+import { addInstructorAPI } from "../../utils/constants";
+import Cookies from "js-cookie"
 const Instructor = () => {
-    const handleSubmit=()=>{
-
+    const handleSubmit=async (e)=>{
+        e.preventDefault();
+        const instructorId = e.target[0].value;
+        const name = e.target[1].value;
+        const data = { instructorId, name };
+        try {
+            const accessToken = Cookies.get('accessToken');
+            const response = await fetch(addInstructorAPI, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization':`Bearer ${accessToken}`
+                },
+                body: JSON.stringify(data)
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            } else {
+                const responseData = await response.json();
+                console.log(responseData)
+            }
+        } catch (error) {
+            console.error('There was a problem with your fetch operation:', error);
+        }
     }
     return (
           <div className="bg-white text-center p-4 rounded-lg shadow-lg">
@@ -19,5 +43,4 @@ const Instructor = () => {
           </div>
     )
 }
-
 export default Instructor

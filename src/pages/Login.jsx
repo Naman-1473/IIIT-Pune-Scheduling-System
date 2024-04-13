@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { loginAPI } from "../utils/constants";
+import Cookies from "js-cookie"
 
 const Login = () => {
     const navigate = useNavigate(); 
@@ -26,7 +27,10 @@ const Login = () => {
                 throw new Error('Network response was not ok');
             } else {
                 const responseData = await response.json();
-                // Store the token in local storage
+
+                Cookies.set('accessToken', responseData.data.accessToken); 
+                Cookies.set('refreshToken',responseData.data.refreshToken);
+
                 localStorage.setItem('token', responseData.data.accessToken);
                 localStorage.setItem('userData', JSON.stringify(responseData));
                 setIsLoggedIn(true);
