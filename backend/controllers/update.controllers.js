@@ -36,6 +36,7 @@ const updateInstructors = asyncHandler( async ( req, res ) =>
 const updateCourses = asyncHandler( async ( req, res ) =>
 {
     const {name,courseId,instructorname}=req.body
+    console.log(req.body)
     const course=await Course.find({courseId});
     const oldInstructorId=course[0]?.instructor.toString()
     // console.log(oldInstructorId)

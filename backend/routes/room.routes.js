@@ -9,7 +9,7 @@ const router = Router()
 
 router.route( "/setroom" ).put( verifyJWT, setRoom )
 router.route( "/getrooms" ).get( verifyJWT, getRooms )
-router.route("/updateroom").patch(verifyJWT,updateRooms)
-router.route("/deleteroom").patch(verifyJWT,deleteRooms)
+router.route( "/updateroom" ).post( verifyJWT, updateRooms )
+router.route( "/deleteroom" ).post( verifyJWT, deleteRooms )
 
 export default router

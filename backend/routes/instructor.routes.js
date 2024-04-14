@@ -7,9 +7,9 @@ import {deleteInstructors} from "../controllers/delete.contollers.js";
 
 const router = Router()
 
-router.route( "/setdata" ).put( verifyJWT, setinstructor )
+router.route( "/setinstructor" ).put( verifyJWT, setinstructor )
 router.route( "/getinstructors" ).get( verifyJWT, getInstructors )
-router.route("/updateinstructor").patch(verifyJWT,updateInstructors)
-router.route("/deleteinstructor").delete(verifyJWT,deleteInstructors)
+router.route("/updateinstructor").post(verifyJWT,updateInstructors)
+router.route("/deleteinstructor").post(verifyJWT,deleteInstructors)
 
 export default router

@@ -7,9 +7,9 @@ import {deleteMeetings} from "../controllers/delete.contollers.js";
 
 const router = Router()
 
-router.route( "/settime" ).put( verifyJWT, setTime )
+router.route( "/setmeeting" ).put( verifyJWT, setTime )
 router.route( "/getmeetings" ).get( verifyJWT, getMeetings )
-router.route("/updatemeeting").patch(verifyJWT,updateMeetings)
-router.route("/deletemeeting").delete(verifyJWT,deleteMeetings)
+router.route("/updatemeeting").post(verifyJWT,updateMeetings)
+router.route("/deletemeeting").post(verifyJWT,deleteMeetings)
 
 export default router

@@ -9,15 +9,20 @@ const app = express()
 
 connectDB()
 
-app.use( cors() )
+app.use( cors(
+    {
+        methods: 'GET,POST,PATCH',
+    }
+) )
 app.use( express.json() )
 app.use( express.urlencoded( {extended: true} ) )
 app.use( express.static( "public" ) )
 app.use( cookieParser() )
 
-app.get('/',(req,res)=>{
-    res.send("ye le")
-})
+app.get( '/', ( req, res ) =>
+{
+    res.send( "ye le" )
+} )
 
 //routes import 
 import userRouter from './routes/user.routes.js'
@@ -29,11 +34,11 @@ import courseRouter from './routes/course.routes.js'
 
 //routes declaration
 app.use( "/api/v1/users", userRouter )
-app.use("/api/v1/instructors",instructorRouter)
-app.use("/api/v1/timings",timeRouter)
-app.use("/api/v1/rooms",roomRouter)
-app.use("/api/v1/sections",sectionRouter)
-app.use("/api/v1/courses",courseRouter)
+app.use( "/api/v1/instructors", instructorRouter )
+app.use( "/api/v1/timings", timeRouter )
+app.use( "/api/v1/rooms", roomRouter )
+app.use( "/api/v1/sections", sectionRouter )
+app.use( "/api/v1/courses", courseRouter )
 
 const port = process.env.PORT || 6000
 

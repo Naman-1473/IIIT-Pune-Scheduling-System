@@ -9,7 +9,7 @@ const router = Router()
 
 router.route( "/setcourse" ).put( verifyJWT, setCourse )
 router.route( "/getcourses" ).get( verifyJWT, getCourses )
-router.route("/updatecourse").patch(verifyJWT,updateCourses)
-router.route("/deletecourse").delete(verifyJWT,deleteCourses)
+router.route("/updatecourse").post(verifyJWT,updateCourses)
+router.route("/deletecourse").post(verifyJWT,deleteCourses)
 
 export default router
