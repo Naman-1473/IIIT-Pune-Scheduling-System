@@ -30,7 +30,7 @@ const Signup = ()=>{
             if (!response.ok) {
               throw new Error('Network response was not ok');
             }else{
-                const responseData = await response.json();
+                const responseData = await response.json();                    
                 console.log(responseData)
 
                 Cookies.set('accessToken', responseData.data.accessToken); 

@@ -53,10 +53,12 @@ export const Navbar = ()=>{
         //     </div>
         // </div>
         <div className="h-1/6 flex justify-between items-center bg-gradient-to-r from-blue-700 to-blue-900 px-4">
+            <Link to="../home">
             <div className="flex items-center">
                 <img src={collegeLogo} alt="college logo" className="w-14 rounded-xl" />
                 <h1 className="text-white text-lg ml-2 font-bold">IIIT Pune</h1>
             </div>
+            </Link>
             <div className="flex items-center space-x-8">
                 <Link to="../data">
                     <div className="cursor-pointer text-white hover:underline transition duration-300">
