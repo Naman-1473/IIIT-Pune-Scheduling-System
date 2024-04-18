@@ -87,7 +87,7 @@ const Timings = () => {
                         <p>{errors.endTime?.message}</p>
                     </div>
                     <div className="mb-4">
-                    <select>
+                    <select >
                         <option value="">Select Time</option>
                         {generateTimeOptions()}
                     </select>

@@ -4,6 +4,7 @@ import Course from "./Course"
 import Timings from "./Timings"
 import Instructor from "./Instructor"
 import Room from "./Room"
+import Department from "./Department"
 const sendData = ({item})=>{
     return(
         <div className="h-5/6 relative">
@@ -14,6 +15,7 @@ const sendData = ({item})=>{
                     : item === "Timings" ? <Timings />
                     : item === "Room" ? <Room />
                         : item === "Instructor" ? <Instructor />
+                        : item === "Department" ? <Department/>
                         : <div></div>
                 }
             </div>

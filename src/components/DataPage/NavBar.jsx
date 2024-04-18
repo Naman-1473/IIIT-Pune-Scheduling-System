@@ -9,6 +9,7 @@ export const Navbar = ({setAddItem})=>{
                 </Link>
             </div>
             <div className="flex items-center">
+                <Button item="Add Department" setAddItem={setAddItem}/>
                 <Button item="Add Section" setAddItem={setAddItem}/>
                 <Button item="Add Room" setAddItem={setAddItem}/>
                 <Button item="Add Instructor" setAddItem={setAddItem}/>

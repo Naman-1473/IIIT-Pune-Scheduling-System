@@ -30,6 +30,7 @@ const Section = () => {
     }
   }
   const handleUpdate = async (data)=>{
+      console.log(data)
       try{
         const accessToken = Cookies.get('accessToken');
         const response = await fetch(updateSectionAPI,{

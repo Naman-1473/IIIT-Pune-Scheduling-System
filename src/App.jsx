@@ -9,6 +9,7 @@ import Room from "./components/ViewPages/Room";
 import Course from "./components/ViewPages/Course";
 import Section from "./components/ViewPages/Section";
 import Timing from "./components/ViewPages/Timing";
+import Department from "./components/ViewPages/Department";
 function App() {
   return (
     <>
@@ -24,6 +25,7 @@ function App() {
               <Route path="/home/Course" element={<Course />} />
               <Route path="/home/Section" element={<Section />} />
               <Route path="/home/Timing" element={<Timing />} />
+              <Route path="/home/Department" element={<Department />} />
             </Route>
             <Route path="/data" element={<AddData/>}/>
          </Routes>

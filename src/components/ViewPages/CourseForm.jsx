@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 
 const CourseForm = ({ course, handleUpdate, handleDelete }) => {
     const [name, setName] = useState(course.name);
+    const [credit, setCredit] = useState(course.credit);
 
     return (
-        <form key={course._id} className='flex justify-between items-center bg-gray-100 p-4 rounded-lg mb-4'>
+        <form className='flex justify-between items-center bg-gray-100 p-4 rounded-lg mb-4'>
             <input
                 type="text"
                 value={course.courseId}
@@ -15,6 +16,12 @@ const CourseForm = ({ course, handleUpdate, handleDelete }) => {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                className="w-2/6 py-2 px-4 border rounded-lg mr-2"
+            />
+            <input
+                type="number"
+                value={credit}
+                onChange={(e) => setCredit(e.target.value)}
                 className="w-2/6 py-2 px-4 border rounded-lg mr-2"
             />
             <input
@@ -29,6 +36,7 @@ const CourseForm = ({ course, handleUpdate, handleDelete }) => {
                     handleUpdate({
                         courseId: course.courseId,
                         name: name,
+                        credit:credit,
                         instructor: course.instructor.name
                     });
                 }}

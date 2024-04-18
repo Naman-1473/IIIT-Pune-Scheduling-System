@@ -1,16 +1,15 @@
-import { getInstructorAPI, addCourseAPI } from "../../utils/constants";
+import { getCourseAPI, addDepartmentAPI } from "../../utils/constants";
 import { useForm } from "react-hook-form";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 
 const Course = () => {
-    const [instructorArray, setInstructorArray] = useState([]);
+    const [courseArray, setCourseArray] = useState([]);
     const form = useForm({
         defaultValues: {
-            name: "",
-            courseId: "",
-            credit:"",
-            instructorname: ""
+            departmentName: "",
+            departmentId: "",
+            courses: []
         }
     });
     const { register, handleSubmit, formState, reset } = form;
@@ -22,7 +21,7 @@ const Course = () => {
         const fetchData = async () => {
             try {
                 const accessToken = Cookies.get('accessToken');
-                const response = await fetch(getInstructorAPI, {
+                const response = await fetch(getCourseAPI, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -34,7 +33,7 @@ const Course = () => {
                 } else {
                     const responseData = await response.json();
                     console.log(responseData);
-                    setInstructorArray(responseData.data);
+                    setCourseArray(responseData.data);
                 }
             } catch (error) {
                 console.error('There was a problem with your fetch operation:', error);
@@ -45,10 +44,10 @@ const Course = () => {
     }, []);
 
     const onSubmit = async (data) => {
-        console.log("Course data", data);
+        console.log("Department data", data);
         try {
             const accessToken = Cookies.get('accessToken');
-            const response = await fetch(addCourseAPI, {
+            const response = await fetch(addDepartmentAPI, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -69,67 +68,54 @@ const Course = () => {
 
     return (
         <div className="bg-white text-center p-4 rounded-lg shadow-lg">
-            <h1 className="text-2xl font-bold mb-4">Enter Course Data</h1>
+            <h1 className="text-2xl font-bold mb-4">Enter Department Data</h1>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="mb-4">
-                    <label htmlFor="courseId" className="block text-sm font-medium text-gray-700 mb-1">Course ID</label>
-                    <input type="text" id="courseId"
-                        {...register("courseId", {
+                    <label htmlFor="departmentId" className="block text-sm font-medium text-gray-700 mb-1">Department ID</label>
+                    <input type="text" id="departmentId"
+                        {...register("departmentId", {
                             required: {
                                 value: true,
-                                message: 'Course Id is required',
+                                message: 'Department Id is required',
                             },
                         })}
                         className="w-full py-2 px-4 border rounded-lg" />
-                    <p>{errors.courseId?.message}</p>
-                </div>
-                {/* duplicate course name is not allowed */}
-                <div className="mb-4">
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Course Name</label>
-                    <input type="text" id="name"
-                        {...register("name", {
-                            required: {
-                                value: true,
-                                message: 'Course Name is required',
-                            },
-                        })}
-                        className="w-full py-2 px-4 border rounded-lg" />
-                    <p>{errors.name?.message}</p>
+                    <p>{errors.departmentId?.message}</p>
                 </div>
                 <div className="mb-4">
-                    <label htmlFor="credit" className="block text-sm font-medium text-gray-700 mb-1">Course Credit</label>
-                    <input type="number" id="credit"
-                        {...register("credit", {
+                    <label htmlFor="departmentName" className="block text-sm font-medium text-gray-700 mb-1">Department Name</label>
+                    <input type="text" id="departmentName"
+                        {...register("departmentName", {
                             required: {
                                 value: true,
-                                message: 'Course Credit is required',
+                                message: 'Department Name is required',
                             },
-                            valueAsNumber: true,
                         })}
                         className="w-full py-2 px-4 border rounded-lg" />
-                    <p>{errors.credit?.message}</p>
+                    <p>{errors.departmentName?.message}</p>
                 </div>
                 <div className="mb-8">
-                    <label htmlFor="instructorname"
+                    <label htmlFor="courses"
                         className="block text-sm font-medium text-gray-700 mb-1"
-                    >Select an Instructor</label>
-                    {instructorArray.length > 0 && (
+                    >Select Courses</label>
+                    {courseArray.length > 0 && (
                         <select
-                            id="instructorname"
-                            {...register("instructorname", {
-                                required: {
-                                    value: true,
-                                    message: 'Instructor Name is required',
-                                },
-                            })}
-                            className="w-full py-2 px-4 border rounded-lg"
+                        id="courses"
+                        {...register("courses", {
+                            required: {
+                                value: true,
+                                message: 'Course is required',
+                            },
+                        })}
+                        className="w-full py-2 px-4 border rounded-lg"
+                        multiple
                         >
-                            {instructorArray.map((instructor, index) => (
-                                <option key={index} value={instructor.name}>{instructor.name}</option>
-                            ))}
+                        {courseArray.map((course, index) => (
+                            <option key={index} value={course.name}>{course.name}</option>
+                        ))}
                         </select>
                     )}
-                    <p>{errors.instructorname?.message}</p>
+                    <p>{errors.courses?.message}</p>
                 </div>
                 <button disabled={isSubmitting}
                     className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg mb-4 hover:bg-blue-700 transition duration-300">
