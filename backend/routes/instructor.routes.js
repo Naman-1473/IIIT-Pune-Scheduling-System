@@ -9,7 +9,7 @@ const router = Router()
 
 router.route( "/setinstructor" ).put( verifyJWT, setinstructor )
 router.route( "/getinstructors" ).get( verifyJWT, getInstructors )
-router.route("/updateinstructor").post(verifyJWT,updateInstructors)
-router.route("/deleteinstructor").post(verifyJWT,deleteInstructors)
+router.route( "/updateinstructor" ).post( verifyJWT, updateInstructors )
+router.route( "/deleteinstructor" ).post( verifyJWT, deleteInstructors )
 
 export default router

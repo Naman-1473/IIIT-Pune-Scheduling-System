@@ -1,13 +1,14 @@
 import {asyncHandler} from "../utils/asyncHandler.js";
 import {ApiError} from "../utils/ApiError.js";
 import {ApiResponse} from "../utils/ApiResponse.js"
-import { Instructor } from "../models/instructor.model.js";
+import {Instructor} from "../models/instructor.model.js";
 
 
 const setinstructor = asyncHandler( async ( req, res ) =>
 {
-    const {name,instructorId} = req.body
-    if ( [ name,instructorId ].some( ( field ) => field?.trim() === '' ) )
+    const {name, instructorId} = req.body
+    // console.log( req.body )
+    if ( [ name, instructorId ].some( ( field ) => field?.trim() === '' ) )
     {
         throw new ApiError( 400, "All fields required" )
     }
@@ -18,7 +19,7 @@ const setinstructor = asyncHandler( async ( req, res ) =>
         throw new ApiError( 409, "Instructor already exist" )
     }
     const instructor = await Instructor.create( {
-        name,instructorId
+        name, instructorId
     } )
     const createdInstructor = await Instructor.findById( instructor._id )
     // console.log(createdInstructor)
@@ -32,6 +33,7 @@ const setinstructor = asyncHandler( async ( req, res ) =>
     )
 } )
 
-export{
+export
+{
     setinstructor
 }

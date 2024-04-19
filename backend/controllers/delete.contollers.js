@@ -6,30 +6,32 @@ import {Instructor} from "../models/instructor.model.js";
 import {Course} from "../models/course.model.js";
 import {Section} from "../models/section.model.js";
 import {Meeting} from "../models/meeting.model.js";
+import {Department} from "../models/department.model.js";
 
 const deleteRooms = asyncHandler( async ( req, res ) =>
 {
     const {roomId} = req.body
-    const deletedRoom = await Room.findOneAndDelete( {roomId: roomId})
+    const deletedRoom = await Room.findOneAndDelete( {roomId: roomId} )
     if ( !deletedRoom )
     {
         throw new ApiError( 409, "Something went wrong while deleting" )
     }
     return res.status( 201 ).json(
-        new ApiResponse( 200, deletedRoom,"Room deleted" )
+        new ApiResponse( 200, deletedRoom, "Room deleted" )
     )
 } )
 
 const deleteInstructors = asyncHandler( async ( req, res ) =>
 {
-    const {instructorId} = req.body
+    const {id, instructorId} = req.body
+    const deletedcourse = await Course.deleteMany( {instructor: id} )
     const deletedinstructor = await Instructor.findOneAndDelete( {instructorId: instructorId} )
     if ( !deletedinstructor )
     {
         throw new ApiError( 409, "Something went wrong while deleting" )
     }
     return res.status( 201 ).json(
-        new ApiResponse( 200, deletedinstructor,"Instructor deleted" )
+        new ApiResponse( 200,deletedcourse, deletedinstructor, "Instructor deleted" )
     )
 } )
 
@@ -42,7 +44,7 @@ const deleteCourses = asyncHandler( async ( req, res ) =>
         throw new ApiError( 409, "Something went wrong while deleting" )
     }
     return res.status( 201 ).json(
-        new ApiResponse( 200, deletedcourse ,"Course deleted")
+        new ApiResponse( 200, deletedcourse, "Course deleted" )
     )
 } )
 
@@ -55,7 +57,7 @@ const deleteSections = asyncHandler( async ( req, res ) =>
         throw new ApiError( 409, "Something went wrong while deleting" )
     }
     return res.status( 201 ).json(
-        new ApiResponse( 200, deletedsection ,"Section deleted")
+        new ApiResponse( 200, deletedsection, "Section deleted" )
     )
 } )
 
@@ -68,7 +70,27 @@ const deleteMeetings = asyncHandler( async ( req, res ) =>
         throw new ApiError( 409, "Something went wrong while deleting" )
     }
     return res.status( 201 ).json(
-        new ApiResponse( 200, deletedmeeting ,"Meeting deleted")
+        new ApiResponse( 200, deletedmeeting, "Meeting deleted" )
+    )
+} )
+
+const deleteDepartments = asyncHandler( async ( req, res ) =>
+{
+    const {departmentId, departmentName} = req.body
+    console.log( req.body )
+    // const department = await Department.findOne( {departmentId} )
+    // const deletedSection = await Section.findOneAndDelete( {departmentName: department._id} )
+    // if ( !deletedSection )
+    // {
+    //     throw new ApiError( 409, "Something went wrong while deleting" )
+    // }
+    const deleteddepartment = await Department.findOneAndDelete( {departmentId: departmentId} )
+    if ( !deleteddepartment )
+    {
+        throw new ApiError( 409, "Something went wrong while deleting" )
+    }
+    return res.status( 201 ).json(
+        new ApiResponse( 200, deleteddepartment, "Department deleted" )
     )
 } )
 
@@ -78,5 +100,6 @@ export
     deleteInstructors,
     deleteCourses,
     deleteSections,
-    deleteMeetings
+    deleteMeetings,
+    deleteDepartments
 }

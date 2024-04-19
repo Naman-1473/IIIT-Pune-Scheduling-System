@@ -13,6 +13,11 @@ const sectionSchema = new Schema( {
         type: String,
         required: true,
         unique: true,
+    },
+    departmentName: {
+        type: Schema.Types.ObjectId,
+        ref: 'Department',
+        required: true
     }
 }, {timestamps: true} )
 

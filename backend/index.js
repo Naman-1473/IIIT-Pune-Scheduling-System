@@ -31,6 +31,8 @@ import timeRouter from './routes/meeting.routes.js'
 import roomRouter from './routes/room.routes.js'
 import sectionRouter from './routes/section.routes.js'
 import courseRouter from './routes/course.routes.js'
+import departmentRouter from './routes/department.routes.js'
+import scheduleRouter from './routes/schedule.routers.js'
 
 //routes declaration
 app.use( "/api/v1/users", userRouter )
@@ -39,6 +41,8 @@ app.use( "/api/v1/timings", timeRouter )
 app.use( "/api/v1/rooms", roomRouter )
 app.use( "/api/v1/sections", sectionRouter )
 app.use( "/api/v1/courses", courseRouter )
+app.use( "/api/v1/departments", departmentRouter )
+app.use( "/api/v1/schedules", scheduleRouter )
 
 const port = process.env.PORT || 6000
 

@@ -9,7 +9,7 @@ const router = Router()
 
 router.route( "/setmeeting" ).put( verifyJWT, setTime )
 router.route( "/getmeetings" ).get( verifyJWT, getMeetings )
-router.route("/updatemeeting").post(verifyJWT,updateMeetings)
-router.route("/deletemeeting").post(verifyJWT,deleteMeetings)
+router.route( "/updatemeeting" ).post( verifyJWT, updateMeetings )
+router.route( "/deletemeeting" ).post( verifyJWT, deleteMeetings )
 
 export default router

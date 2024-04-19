@@ -9,7 +9,7 @@ const router = Router()
 
 router.route( "/setsection" ).put( verifyJWT, setSection )
 router.route( "/getsections" ).get( verifyJWT, getSections )
-router.route("/updatesection").post(verifyJWT,updateSections)
-router.route("/deletesection").post(verifyJWT,deleteSections)
+router.route( "/updatesection" ).post( verifyJWT, updateSections )
+router.route( "/deletesection" ).post( verifyJWT, deleteSections )
 
 export default router
