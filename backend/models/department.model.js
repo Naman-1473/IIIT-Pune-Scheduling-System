@@ -1,11 +1,6 @@
 import mongoose, {Schema} from 'mongoose'
 
 const departmentSchema = new Schema( {
-    departmentId: {
-        type: String,
-        required: true,
-        unique: true,
-    },
     departmentName: {
         type: String,
         required: true,

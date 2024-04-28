@@ -1,19 +1,19 @@
 import {asyncHandler} from "../utils/asyncHandler.js";
 import {ApiError} from "../utils/ApiError.js";
 import {ApiResponse} from "../utils/ApiResponse.js"
-import { Meeting } from "../models/meeting.model.js";
+import {Meeting} from "../models/meeting.model.js";
 
 
 const setTime = asyncHandler( async ( req, res ) =>
 {
-    const {startTime, endTime} = req.body
-    if ( [ startTime,endTime].some( ( field ) => field?.trim() === '' ) )
+    const {timeId, day, startTime, endTime} = req.body
+    if ( [ timeId, day, startTime, endTime ].some( ( field ) => field?.trim() === '' ) )
     {
         throw new ApiError( 400, "All fields required" )
     }
 
     const meeting = await Meeting.create( {
-        startTime, endTime
+        timeId, day, startTime, endTime
     } )
     const createdTime = await Meeting.findById( meeting._id )
     // console.log(createdTime)

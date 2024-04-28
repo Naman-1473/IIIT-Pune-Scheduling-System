@@ -31,7 +31,7 @@ const deleteInstructors = asyncHandler( async ( req, res ) =>
         throw new ApiError( 409, "Something went wrong while deleting" )
     }
     return res.status( 201 ).json(
-        new ApiResponse( 200,deletedcourse, deletedinstructor, "Instructor deleted" )
+        new ApiResponse( 200, deletedcourse, deletedinstructor, "Instructor deleted" )
     )
 } )
 
@@ -63,8 +63,8 @@ const deleteSections = asyncHandler( async ( req, res ) =>
 
 const deleteMeetings = asyncHandler( async ( req, res ) =>
 {
-    const {startTime} = req.body
-    const deletedmeeting = await Meeting.findOneAndDelete( {startTime: startTime} )
+    const {timeId} = req.body
+    const deletedmeeting = await Meeting.findOneAndDelete( {timeId} )
     if ( !deletedmeeting )
     {
         throw new ApiError( 409, "Something went wrong while deleting" )
@@ -76,21 +76,16 @@ const deleteMeetings = asyncHandler( async ( req, res ) =>
 
 const deleteDepartments = asyncHandler( async ( req, res ) =>
 {
-    const {departmentId, departmentName} = req.body
-    console.log( req.body )
-    // const department = await Department.findOne( {departmentId} )
-    // const deletedSection = await Section.findOneAndDelete( {departmentName: department._id} )
-    // if ( !deletedSection )
-    // {
-    //     throw new ApiError( 409, "Something went wrong while deleting" )
-    // }
-    const deleteddepartment = await Department.findOneAndDelete( {departmentId: departmentId} )
+    const {departmentName} = req.body
+    const department = await Department.findOne( {departmentName: departmentName} )
+    const deletedSections = await Section.deleteMany( {departmentName: department?._id} )
+    const deleteddepartment = await Department.findOneAndDelete( {departmentName: departmentName} )
     if ( !deleteddepartment )
     {
         throw new ApiError( 409, "Something went wrong while deleting" )
     }
     return res.status( 201 ).json(
-        new ApiResponse( 200, deleteddepartment, "Department deleted" )
+        new ApiResponse( 200, deletedSections, deleteddepartment, "Department deleted" )
     )
 } )
 

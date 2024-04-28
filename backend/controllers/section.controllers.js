@@ -7,7 +7,7 @@ import {Department} from "../models/department.model.js";
 
 const setSection = asyncHandler( async ( req, res ) =>
 {
-    const {sectionId, capacity, departmentName} = req.body
+    const {sectionId, departmentName} = req.body
 
     if ( [ sectionId, departmentName ].some( ( field ) => field?.trim() === '' ) )
     {
@@ -21,7 +21,7 @@ const setSection = asyncHandler( async ( req, res ) =>
     }
     const department = await Department.findOne( {departmentName} )
     const section = await Section.create( {
-        capacity, sectionId, departmentName: department._id
+        sectionId, departmentName: department._id
     } )
     const createdSection = await Section.findById( section._id )
     // console.log(createdSection)

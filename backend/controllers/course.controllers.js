@@ -7,13 +7,13 @@ import {Instructor} from "../models/instructor.model.js";
 
 const setCourse = asyncHandler( async ( req, res ) =>
 {
-    const {name, courseId, instructorname, credit} = req.body
+    const {courseId, instructorname, credit, coursecapacity} = req.body
     // console.log( req.body )
-    if ( !credit )
+    if ( !credit || !coursecapacity )
     {
         throw new ApiError( 400, "All fields required" )
     }
-    if ( [ name, courseId, instructorname ].some( ( field ) => field?.trim() === '' ) )
+    if ( [ courseId, instructorname ].some( ( field ) => field?.trim() === '' ) )
     {
         throw new ApiError( 400, "All fields required" )
     }
@@ -27,7 +27,7 @@ const setCourse = asyncHandler( async ( req, res ) =>
     const instructorQ = await Instructor.findOne( {name: instructorname} );
     const instructor = instructorQ._id;
     const course = await Course.create( {
-        name, courseId, instructor, credit
+        courseId, instructor, credit, coursecapacity
     } )
     // console.log( course );
     const createdCourse = await Course.findById( course._id )

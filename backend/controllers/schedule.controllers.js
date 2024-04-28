@@ -5,13 +5,15 @@ import {Instructor} from "../models/instructor.model.js"
 import {Meeting} from "../models/meeting.model.js"
 import {Room} from "../models/room.model.js"
 import {Section} from "../models/section.model.js"
+import {ApiResponse} from '../utils/ApiResponse.js'
 
 const getSchedule = asyncHandler( async ( req, res ) =>
 {
+
     const POPULATION_SIZE = 9
     const NUMB_OF_ELITE_SCHEDULES = 1
     const TOURNAMENT_SELECTION_SIZE = 3
-    const MUTATION_RATE = 0.05
+    let MUTATION_RATE = 0.05
     class Data
     {
         constructor ()
@@ -33,17 +35,7 @@ const getSchedule = asyncHandler( async ( req, res ) =>
                 this._courses = await Course.find();
                 this._depts = await Department.find();
                 this._instructors = await Instructor.find();
-
-                let meetings = await Meeting.find();
-                const week = [ 'mon', 'tue', 'wed', 'thur', 'fri' ];
-                for ( const day of week )
-                {
-                    for ( let i = 0; i < meetings.length; i++ )
-                    {
-                        meetings[ i ].day = day;
-                    }
-                }
-                this._meetingTimes = meetings;
+                this._meetingTimes = await Meeting.find();
                 this._sections = await Section.find();
             } catch ( error )
             {
@@ -86,10 +78,9 @@ const getSchedule = asyncHandler( async ( req, res ) =>
     class Schedule
     {
         // Constructor for the Schedule class
-        constructor ( data )
+        constructor ()
         {
             // Initialize instance variables
-            this._data = data; // Data object containing information about rooms, instructors, courses, etc.
             this._classes = []; // Array to store classes
             this._numberOfConflicts = 0; // Number of conflicts in the schedule
             this._fitness = -1; // Fitness score of the schedule initially set to -1 to indicate no fitness has been calculated
@@ -127,66 +118,54 @@ const getSchedule = asyncHandler( async ( req, res ) =>
         }
 
         // Method to initialize the schedule
-        initialize ()
+        async initialize ()
         {
             // Get all sections from the data
-            const sections = this._data.get_sections();
+            const sections = data.get_sections();
             // Get all rooms from the data
-            const rooms = this._data.get_rooms();
+            const rooms = data.get_rooms();
             // Create a copy of the rooms array to manipulate
-            let availableRooms = [ ...rooms ];
+            // let availableRooms = [ ...rooms ];
             // Iterate over each section
             for ( const section of sections )
             {
                 // Get the department of the section
-                const dept = section.departmentName;
+                const deptId = section.departmentName;
+                const dept = await Department.findById( deptId )
                 // Get all courses in the department
-                const courses = dept.courses;
-                // Find a room with sufficient capacity for the section
-                // also make sure there is no wastage of space
-                let minDiff = Infinity;
-                let suitableRoomIndex = -1;
-                for ( let i = 0; i < availableRooms.length; i++ )
+                const coursesId = dept.courses;
+                const room = data._rooms[ 0 ];
+
+                let courses = [];
+                try
                 {
-                    const room = availableRooms[ i ];
-                    if ( room.capacity >= section.capacity )
+                    for ( const courseId of coursesId )
                     {
-                        const diff = room.capacity - section.capacity;
-                        if ( diff < minDiff )
+                        const course = await Course.findById( courseId ); // Find course by its ObjectId
+                        if ( course )
                         {
-                            minDiff = diff;
-                            suitableRoomIndex = i;
+                            courses.push( course ); // Push the found course to the courses array
+                        } else
+                        {
+                            console.log( `Course with id ${ courseId } not found` );
                         }
                     }
-                }
-                // If no suitable room is found, throw an error
-                if ( suitableRoomIndex === -1 )
+                } catch ( error )
                 {
-                    throw new Error( `No room with sufficient capacity for section ${ section.id }` );
+                    console.error( 'Error retrieving courses:', error );
                 }
-                // Get the suitable room
-                const room = availableRooms[ suitableRoomIndex ];
-                // Remove the room from the available rooms
-                availableRooms.splice( suitableRoomIndex, 1 );
-                // Iterate over each course
                 for ( const course of courses )
                 {
-                    // Get the credit for the course
-                    const credit = course.credit;
-                    // Distribute classes evenly among courses
-                    for ( let i = 0; i < credit; i++ )
+                    for ( let i = 0; i < course.credit; i++ )
                     {
-                        // Create a new class instance
-                        const newClass = new Class( this._classNumb, dept, section, course );
-                        // Increment class number
+                        const instructor = await Course.findById( course._id ).populate( 'instructor' );
+                        const crs_inst = Array.from( instructor );
+                        const newClass = new Class( this._classNumb, dept, section.sectionId, course );
                         this._classNumb++;
-                        // Set meeting time for the class randomly
-                        newClass.setMeetingTime( data.get_meetingTimes()[ Math.floor( Math.random() * this._data.get_meetingTimes().length ) ] );
-                        // Set room for the class
+                        const meeting = await Meeting.find();
+                        newClass.setMeetingTime( data.get_meetingTimes()[ Math.floor( Math.random() * meeting.length ) ] );
                         newClass.setRoom( room );
-                        // Set instructor for the class
-                        newClass.setInstructor( course.instructorname );
-                        // Add the new class to the array of classes
+                        newClass.setInstructor( crs_inst[ Math.floor( Math.random() * crs_inst.length ) ] );
                         this._classes.push( newClass );
                     }
                 }
@@ -195,66 +174,82 @@ const getSchedule = asyncHandler( async ( req, res ) =>
             return this;
         }
 
-
         // Method to calculate the fitness of the schedule
         calculate_fitness ()
         {
-            // Reset the number of conflicts
-            this._numberOfConflicts = 0;
-            // Get all classes in the schedule
+            // Initialize the conflict count
+            let numberOfConflicts = 0;
+
+            // Get the list of classes
             const classes = this.getClasses();
-            // Iterate over each class
+
+            // Iterate through the classes
             for ( let i = 0; i < classes.length; i++ )
             {
-                // Iterate over each class again to check for conflicts with other classes
-                for ( let j = i; j < classes.length; j++ )
+                // Check if room capacity is less than max number of students
+                if ( classes[ i ].room.seating_capacity < parseInt( classes[ i ].course.coursecapacity ) )
                 {
-                    // SECTION CONSTRAINTS
-                    //  same time same day two courses for a section
-                    if ( classes[ i ].meeting_time.startTime === classes[ j ].meeting_time.startTime &&
-                        classes[ i ].meeting_time.day === classes[ j ].meeting_time.day &&
+                    numberOfConflicts++;
+                }
+
+                // Compare meeting times and sections
+                for ( let j = i + 1; j < classes.length; j++ )
+                {
+                    if ( classes[ i ].meeting_time === classes[ j ].meeting_time &&
                         classes[ i ].section === classes[ j ].section )
                     {
-                        this._numberOfConflicts++;
+                        numberOfConflicts++;
                     }
-                    // one course taught only once to each section in a day
+
+                    // Check for same day, section, and course
                     if ( classes[ i ].meeting_time.day === classes[ j ].meeting_time.day &&
                         classes[ i ].section === classes[ j ].section &&
-                        classes[ i ].course.name === classes[ j ].course.name )
+                        classes[ i ].course === classes[ j ].course )
                     {
-                        this._numberOfConflicts++;
+                        numberOfConflicts++;
                     }
 
-                    // INSTRUCTOR CONSTRAINT
-                    // same time same day two sections for an instructor
-                    if ( classes[ i ].meeting_time.startTime === classes[ j ].meeting_time.startTime &&
-                        classes[ i ].meeting_time.day === classes[ j ].meeting_time.day &&
-                        classes[ i ].instructor === classes[ j ].instructor &&
-                        classes[ i ].section.sectionId !== classes[ j ].section.sectionId )
+                    // Check for same meeting time and instructor
+                    if ( classes[ i ].meeting_time === classes[ j ].meeting_time &&
+                        classes[ i ].instructor === classes[ j ].instructor )
                     {
-                        this._numberOfConflicts++;
+                        numberOfConflicts++;
                     }
-
                 }
             }
-            // Calculate the fitness score (inverse of the number of conflicts)
-            return 1 / ( 1.0 * ( this._numberOfConflicts + 1 ) );
+
+            // Calculate the conflict score
+            const conflictScore = 1 / ( 1.0 * numberOfConflicts + 1 );
+
+            // Return the result
+            return conflictScore;
+
         }
+
     }
 
     class Population
     {
-        constructor ( size, data )
+        constructor ( size )
         {
             this._size = size;
-            this._data = data;
-            this._schedules = Array.from( {length: size}, () => new Schedule().initialize() );
+            this._data = data; // Assuming 'data' is defined elsewhere
+            this._schedules = []
         }
-
-        getSchedules ()
+        async initializeSchedules ()
+        {
+            for ( let i = 0; i < this._size; i++ )
+            {
+                let schedule = new Schedule();
+                await schedule.initialize();
+                this._schedules.push( schedule );
+            }
+        }
+        get_schedules ()
         {
             return this._schedules;
         }
+
     }
 
     class Class
@@ -319,41 +314,44 @@ const getSchedule = asyncHandler( async ( req, res ) =>
 
     class GeneticAlgorithm
     {
-        evolve ( population )
+        async evolve ( currentPopulation )
         {
-            return this._mutate_population( this._crossover_population( population ) );
+            let newPopulation = await this._crossover_population( currentPopulation );
+            newPopulation = await this._mutate_population( newPopulation );
+            return newPopulation;
         }
-
-        _crossover_population ( pop )
+        async _crossover_population ( pop )
         {
-            const crossoverPop = new Population( 0 );
+            let crossover_pop = new Population( 0 );
             for ( let i = 0; i < NUMB_OF_ELITE_SCHEDULES; i++ )
             {
-                crossoverPop.getSchedules().push( pop.getSchedules()[ i ] );
+                crossover_pop.get_schedules().push( pop.get_schedules()[ i ] );
             }
             let i = NUMB_OF_ELITE_SCHEDULES;
             while ( i < POPULATION_SIZE )
             {
-                const schedule1 = this._select_tournament_population( pop ).getSchedules()[ 0 ];
-                const schedule2 = this._select_tournament_population( pop ).getSchedules()[ 0 ];
-                crossoverPop.getSchedules().push( this._crossover_schedule( schedule1, schedule2 ) );
+                let schedule1 = this._select_tournament_population( pop ).get_schedules()[ 0 ];
+                let schedule2 = this._select_tournament_population( pop ).get_schedules()[ 0 ];
+                crossover_pop.get_schedules().push( await this._crossover_schedule( schedule1, schedule2 ) );
                 i++;
             }
-            return crossoverPop;
+            return crossover_pop;
+
         }
 
         _mutate_population ( population )
         {
             for ( let i = NUMB_OF_ELITE_SCHEDULES; i < POPULATION_SIZE; i++ )
             {
-                this._mutate_schedule( population.getSchedules()[ i ] );
+                this._mutate_schedule( population.get_schedules()[ i ] );
             }
             return population;
         }
 
-        _crossover_schedule ( schedule1, schedule2 )
+
+        async _crossover_schedule ( schedule1, schedule2 )
         {
-            const crossoverSchedule = new Schedule().initialize();
+            const crossoverSchedule = await new Schedule().initialize();
             for ( let i = 0; i < crossoverSchedule.getClasses().length; i++ )
             {
                 if ( Math.random() > 0.5 )
@@ -367,9 +365,11 @@ const getSchedule = asyncHandler( async ( req, res ) =>
             return crossoverSchedule;
         }
 
-        _mutate_schedule ( mutateSchedule )
+
+        async _mutate_schedule ( mutateSchedule )
         {
-            const schedule = new Schedule().initialize();
+
+            const schedule = await new Schedule().initialize();
             for ( let i = 0; i < mutateSchedule.getClasses().length; i++ )
             {
                 if ( MUTATION_RATE > Math.random() )
@@ -378,45 +378,59 @@ const getSchedule = asyncHandler( async ( req, res ) =>
                 }
             }
             return mutateSchedule;
+
+
         }
 
         _select_tournament_population ( pop )
         {
-            const tournamentPop = new Population( 0 );
+
+            const tournament_pop = new Population( 0 );
             let i = 0;
             while ( i < TOURNAMENT_SELECTION_SIZE )
             {
-                tournamentPop.getSchedules().push( pop.getSchedules()[ Math.floor( Math.random() * POPULATION_SIZE ) ] );
+                const randomIndex = Math.floor( Math.random() * POPULATION_SIZE );
+                tournament_pop.get_schedules().push( pop.get_schedules()[ randomIndex ] );
                 i++;
             }
-            tournamentPop.getSchedules().sort( ( a, b ) => b.getFitness() - a.getFitness() );
-            return tournamentPop;
+            tournament_pop.get_schedules().sort( ( a, b ) => b.getFitness() - a.getFitness() );
+            return tournament_pop;
+
+
         }
     }
 
-    function timetable ()
+
+    async function timetable ()
     {
         let schedule = [];
         let population = new Population( POPULATION_SIZE );
-        let generationNum = 0;
-        // CHECK LATER
-        population.getSchedules().sort( ( a, b ) => b.getFitness() - a.getFitness() );
-        let geneticAlgorithm = new GeneticAlgorithm();
-        while ( population.getSchedules()[ 0 ].getFitness() !== 1.0 )
+        await population.initializeSchedules();
+        let generation_num = 0;
+        population.get_schedules().sort( ( a, b ) => b.getFitness() - a.getFitness() );
+        const geneticAlgorithm = new GeneticAlgorithm();
+        while ( population.get_schedules()[ 0 ].getFitness() !== 1.0 )
         {
-            generationNum++;
-            console.log( '\n> Generation #' + generationNum );
-            population = geneticAlgorithm.evolve( population );
-            population.getSchedules().sort( ( a, b ) => b.getFitness() - a.getFitness() );
-            schedule = population.getSchedules()[ 0 ].getClasses();
+            generation_num++;
+            console.log( '\n> Generation #' + generation_num );
+            population = await geneticAlgorithm.evolve( population );
+            population.get_schedules().sort( ( a, b ) => b.getFitness() - a.getFitness() );
+            schedule = population.get_schedules()[ 0 ].getClasses();
+            console.log( population.get_schedules()[ 0 ].getFitness() );
         }
+
+        // Assuming you have a function similar to render in JavaScript to render the timetable.
+        // You would replace this with your actual rendering logic.
+        // return res.status( 201 ).json(
+        //     new ApiResponse(200, {schedule: schedule, sections: await Section.find(), times: await MeetingTime.find()},"Algo completed")
+        // ) ;
         return schedule
     }
+
     const data = new Data();
     await data.fetchData();
-    //console.log( timetable() );
+    console.log( await timetable() )
 } )
-
 export
 {
     getSchedule

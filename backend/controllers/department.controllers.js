@@ -7,18 +7,18 @@ import {Course} from "../models/course.model.js";
 
 const setdepartment = asyncHandler( async ( req, res ) =>
 {
-    const {departmentName, departmentId, courses} = req.body
+    const {departmentName, courses} = req.body
 
     if ( courses.length === 0 )
     {
         throw new ApiError( 400, "All fields required" )
     }
-    if ( [ departmentId, departmentName ].some( ( field ) => field?.trim() === '' ) )
+    if ( [ departmentName ].some( ( field ) => field?.trim() === '' ) )
     {
         throw new ApiError( 400, "All fields required" )
     }
 
-    const existedDepartment = await Department.findOne( {departmentId} )
+    const existedDepartment = await Department.findOne( {departmentName} )
     if ( existedDepartment )
     {
         throw new ApiError( 409, "Department already exist" )
@@ -31,7 +31,7 @@ const setdepartment = asyncHandler( async ( req, res ) =>
         {
             for ( const coursename of courses )
             {
-                const course = await Course.findOne( {name: coursename} );
+                const course = await Course.findOne( {courseId: coursename} );
                 if ( course )
                 {
                     coursearray.push( course._id );
@@ -45,7 +45,7 @@ const setdepartment = asyncHandler( async ( req, res ) =>
     await processCourses();
 
     const department = await Department.create( {
-        departmentName, departmentId, courses: coursearray
+        departmentName, courses: coursearray
     } )
     const createdDepartment = await Department.findById( department._id )
     // console.log(createdDepartment)

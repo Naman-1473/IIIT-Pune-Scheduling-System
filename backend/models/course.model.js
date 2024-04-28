@@ -1,16 +1,11 @@
 import mongoose, {Schema} from 'mongoose'
 
 const courseSchema = new Schema( {
-    name: {
-        type: String,
-        required: true,
-        index: true,
-        unique: true,
-    },
     courseId: {
         type: String,
         required: true,
         unique: true,
+        index: true
     },
     instructor: {
         type: Schema.Types.ObjectId,
@@ -20,6 +15,10 @@ const courseSchema = new Schema( {
     credit: {
         type: Number,
         required: true,
+    },
+    coursecapacity: {
+        type: Number,
+        required: true
     }
 }, {timestamps: true} )
 
