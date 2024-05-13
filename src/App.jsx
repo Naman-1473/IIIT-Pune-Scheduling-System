@@ -10,6 +10,7 @@ import Course from "./components/ViewPages/Course";
 import Section from "./components/ViewPages/Section";
 import Timing from "./components/ViewPages/Timing";
 import Department from "./components/ViewPages/Department";
+import Schedule from "./components/schedules/Schedule";
 function App() {
   return (
     <>
@@ -17,7 +18,6 @@ function App() {
          <Routes>
             <Route path="/" element={<Signup/>}/>
             <Route path="/login" element={<Login/>}/>
-            <Route path="/signup" element={<Signup/>}/>
             <Route path="/home" element={<Home />}>
               <Route path="/home" element={<Cards />} />
               <Route path="/home/Instructor" element={<Instructor />} />
@@ -26,6 +26,7 @@ function App() {
               <Route path="/home/Section" element={<Section />} />
               <Route path="/home/Timing" element={<Timing />} />
               <Route path="/home/Department" element={<Department />} />
+              <Route path="/home/Schedule" element={<Schedule />} />
             </Route>
             <Route path="/data" element={<AddData/>}/>
          </Routes>
