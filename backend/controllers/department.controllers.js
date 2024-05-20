@@ -8,7 +8,6 @@ import {Course} from "../models/course.model.js";
 const setdepartment = asyncHandler( async ( req, res ) =>
 {
     const {departmentName, courses} = req.body
-
     if ( courses.length === 0 )
     {
         throw new ApiError( 400, "All fields required" )
@@ -42,11 +41,13 @@ const setdepartment = asyncHandler( async ( req, res ) =>
             throw new ApiError( 409, "Error processing courses" )
         }
     }
+    const departmentId = 4;
     await processCourses();
-
+    console.log(coursearray)
     const department = await Department.create( {
         departmentName, courses: coursearray
     } )
+    console.log(department)
     const createdDepartment = await Department.findById( department._id )
     // console.log(createdDepartment)
     if ( !createdDepartment )
