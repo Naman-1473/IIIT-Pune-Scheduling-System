@@ -8,7 +8,6 @@ const Course = () => {
     const form = useForm({
         defaultValues: {
             departmentName: "",
-            departmentId: "",
             courses: []
         }
     });
@@ -71,18 +70,6 @@ const Course = () => {
             <h1 className="text-2xl font-bold mb-4">Enter Department Data</h1>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="mb-4">
-                    <label htmlFor="departmentId" className="block text-sm font-medium text-gray-700 mb-1">Department ID</label>
-                    <input type="text" id="departmentId"
-                        {...register("departmentId", {
-                            required: {
-                                value: true,
-                                message: 'Department Id is required',
-                            },
-                        })}
-                        className="w-full py-2 px-4 border rounded-lg" />
-                    <p>{errors.departmentId?.message}</p>
-                </div>
-                <div className="mb-4">
                     <label htmlFor="departmentName" className="block text-sm font-medium text-gray-700 mb-1">Department Name</label>
                     <input type="text" id="departmentName"
                         {...register("departmentName", {
@@ -111,7 +98,7 @@ const Course = () => {
                         multiple
                         >
                         {courseArray.map((course, index) => (
-                            <option key={index} value={course.name}>{course.name}</option>
+                            <option key={index} value={course.courseId}>{course.courseId}</option>
                         ))}
                         </select>
                     )}

@@ -7,9 +7,9 @@ const Course = () => {
     const [instructorArray, setInstructorArray] = useState([]);
     const form = useForm({
         defaultValues: {
-            name: "",
             courseId: "",
             credit:"",
+            coursecapacity:"",
             instructorname: ""
         }
     });
@@ -45,7 +45,6 @@ const Course = () => {
     }, []);
 
     const onSubmit = async (data) => {
-        console.log("Course data", data);
         try {
             const accessToken = Cookies.get('accessToken');
             const response = await fetch(addCourseAPI, {
@@ -83,19 +82,6 @@ const Course = () => {
                         className="w-full py-2 px-4 border rounded-lg" />
                     <p>{errors.courseId?.message}</p>
                 </div>
-                {/* duplicate course name is not allowed */}
-                <div className="mb-4">
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Course Name</label>
-                    <input type="text" id="name"
-                        {...register("name", {
-                            required: {
-                                value: true,
-                                message: 'Course Name is required',
-                            },
-                        })}
-                        className="w-full py-2 px-4 border rounded-lg" />
-                    <p>{errors.name?.message}</p>
-                </div>
                 <div className="mb-4">
                     <label htmlFor="credit" className="block text-sm font-medium text-gray-700 mb-1">Course Credit</label>
                     <input type="number" id="credit"
@@ -108,6 +94,19 @@ const Course = () => {
                         })}
                         className="w-full py-2 px-4 border rounded-lg" />
                     <p>{errors.credit?.message}</p>
+                </div>
+                <div className="mb-4">
+                    <label htmlFor="coursecapacity" className="block text-sm font-medium text-gray-700 mb-1">Course Capacity</label>
+                    <input type="number" id="coursecapacity"
+                        {...register("coursecapacity", {
+                            required: {
+                                value: true,
+                                message: 'Course Capacity is required',
+                            },
+                            valueAsNumber: true,
+                        })}
+                        className="w-full py-2 px-4 border rounded-lg" />
+                    <p>{errors.coursecapacity?.message}</p>
                 </div>
                 <div className="mb-8">
                     <label htmlFor="instructorname"

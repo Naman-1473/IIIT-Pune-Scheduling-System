@@ -9,7 +9,6 @@ const Section = () => {
     const form = useForm({
         defaultValues:{
             sectionId:"",
-            capacity:"",
             departmentName:""
         }
     })
@@ -45,7 +44,6 @@ const Section = () => {
         fetchData();
     }, []);
     const handler= async (data)=>{
-        console.log("form data",data)
         try {
             const accessToken = Cookies.get('accessToken');
             const response = await fetch(addSectionAPI, {
@@ -81,29 +79,6 @@ const Section = () => {
                      })}
                      className="w-full py-2 px-4 border rounded-lg" />
                      <p>{errors.sectionId?.message}</p>
-                </div>
-                <div className="mb-4">
-                    <label htmlFor="capacity" className="block text-sm font-medium text-gray-700 mb-1">Section strength</label>
-                    <input type="number" id="capacity"
-                    {...register("capacity",{
-                        // TYPE is first done then validation
-                        // valueAsNumber:true,
-                        required:{
-                            value:true,
-                            message:'Section strength is required',
-                        },
-                        // can also add multiple validation as an object of functions
-                        validate: (fieldValue)=>{
-                            // returns true if validation is passed
-                            // else return the message
-                            return (
-                                fieldValue < 1000 || "Too large"
-                            );
-                        }
-                     })
-                    } 
-                    className="w-full py-2 px-4 border rounded-lg" />
-                    <p>{errors.capacity?.message}</p>
                 </div>
                 <div className="mb-8">
                     <label htmlFor="departmentName"
