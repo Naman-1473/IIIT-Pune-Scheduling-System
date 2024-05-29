@@ -4,16 +4,17 @@
 This project is a timetable generator that leverages genetic algorithm to create optimized timetables efficiently. The backend is built with Node.js and MongoDB, while the frontend is built with React.The genetic algorithm is implemented with Python for efficiency purpose and runs on a seperate server.
 
 ### Demo Images
+- **Login Page**
 ![Login](DemoImg/login.png)  
-
+- **Home Page**
 ![Home Page](DemoImg/homePage.png)
-
+- **Data Entry**
 ![Entering data](DemoImg/dataEntry.png)
-
+- **View Institute Data (and update)**
 ![View and Update data](DemoImg/viewUpdate.png)
-
+- **Schedule Landing Page**
 ![Schedule Landing Page](DemoImg/scheduleLanding.png)
-
+- **Generated Schedule**
 ![Schedule Generated](DemoImg/schedule.png)
 
 Follow the instructions below to set up and run the project.
