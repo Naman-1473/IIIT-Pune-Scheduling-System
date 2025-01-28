@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 const CourseForm = ({ course, handleUpdate, handleDelete }) => {
     const [capacity, setCapacity] = useState(course.coursecapacity);
     const [credit, setCredit] = useState(course.credit);
+    const [instructor, setInstructor] = useState(course.instructor.instructorName);
 
     return (   
         <form className='flex justify-between items-center bg-gray-100 p-4 rounded-lg mb-4'>
@@ -26,9 +27,9 @@ const CourseForm = ({ course, handleUpdate, handleDelete }) => {
             />
             <input
                 type="text"
-                value={course.instructor.name}
+                value={instructor}
+                onChange={(e) => setInstructor(e.target.value)}
                 className="w-1/6 py-2 px-4 border rounded-lg mr-2"
-                readOnly
             />
             <button
                 type="button"
@@ -37,7 +38,7 @@ const CourseForm = ({ course, handleUpdate, handleDelete }) => {
                         courseId: course.courseId,
                         coursecapacity: capacity,
                         credit:credit,
-                        instructor: course.instructor.name
+                        instructor: instructor
                     });
                 }}
                 className="w-1/6 bg-blue-500 text-white py-2 px-4 rounded-lg mr-2 hover:bg-blue-600 transition duration-300"

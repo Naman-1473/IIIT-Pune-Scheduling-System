@@ -24,7 +24,7 @@ const updateRooms = asyncHandler( async ( req, res ) =>
 const updateInstructors = asyncHandler( async ( req, res ) =>
 {
     const {instructorId, name} = req.body
-    const updatedinstructor = await Instructor.findOneAndUpdate( {instructorId: instructorId}, {name: name}, {new: true} )
+    const updatedinstructor = await Instructor.findOneAndUpdate( {instructorId: instructorId}, {instructorName: name}, {new: true} )
     if ( !updatedinstructor )
     {
         throw new ApiError( 409, "Something went wrong while updating" )
@@ -37,12 +37,10 @@ const updateInstructors = asyncHandler( async ( req, res ) =>
 const updateCourses = asyncHandler( async ( req, res ) =>
 {
     const {courseId, instructor, credit, coursecapacity} = req.body
-    // console.log(req.body)
-    const course = await Course.find( {courseId} );
-    const oldInstructorId = course[ 0 ]?.instructor.toString()
-    // console.log(oldInstructorId)
-    const updatedInstructor = await Instructor.findOneAndUpdate( {_id: oldInstructorId}, {name: instructor}, {new: true} )
-    // console.log(updatedInstructor)
+    const updatedInstructor = await Instructor.findOne( {instructorName: instructor})
+    if(!updatedInstructor){
+        throw new ApiError( 404, "Instructor data does not exist" )
+    }
     const updatedcourse = await Course.findOneAndUpdate( {courseId: courseId}, {coursecapacity: coursecapacity, instructor: updatedInstructor?._id, credit: credit}, {new: true} )
     if ( !updatedcourse )
     {

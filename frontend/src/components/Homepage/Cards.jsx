@@ -40,7 +40,7 @@ const Cards = () => {
           <InfoCard name="Professors" image={professors} />
         </Link>
         <Link to="./Section" >
-          <InfoCard name="Classes" image={students} />
+          <InfoCard name="Sections" image={students} />
         </Link>
         <Link to="./Room" >
           <InfoCard name="Rooms" image={facilities} />

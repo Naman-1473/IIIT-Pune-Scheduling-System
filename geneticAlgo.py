@@ -223,7 +223,7 @@ def get_data():
         return ({
             "Department": cls.department['departmentName'],
             "Course": cls.course['courseId'],
-            "Instructor": cls.instructor['name'],
+            "Instructor": cls.instructor['instructorName'],
             "Day": cls.meeting_time['day'],
             "StartTime": cls.meeting_time['startTime'],
             "EndTime": cls.meeting_time['endTime'],

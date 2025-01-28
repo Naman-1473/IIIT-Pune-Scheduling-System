@@ -10,7 +10,7 @@ const Course = () => {
             courseId: "",
             credit:"",
             coursecapacity:"",
-            instructorname: ""
+            instructorName: ""
         }
     });
     const { register, handleSubmit, formState, reset } = form;
@@ -109,13 +109,13 @@ const Course = () => {
                     <p>{errors.coursecapacity?.message}</p>
                 </div>
                 <div className="mb-8">
-                    <label htmlFor="instructorname"
+                    <label htmlFor="instructorName"
                         className="block text-sm font-medium text-gray-700 mb-1"
                     >Select an Instructor</label>
                     {instructorArray.length > 0 && (
                         <select
-                            id="instructorname"
-                            {...register("instructorname", {
+                            id="instructorName"
+                            {...register("instructorName", {
                                 required: {
                                     value: true,
                                     message: 'Instructor Name is required',
@@ -124,11 +124,11 @@ const Course = () => {
                             className="w-full py-2 px-4 border rounded-lg"
                         >
                             {instructorArray.map((instructor, index) => (
-                                <option key={index} value={instructor.name}>{instructor.name}</option>
+                                <option key={index} value={instructor.instructorName}>{instructor.instructorName}</option>
                             ))}
                         </select>
                     )}
-                    <p>{errors.instructorname?.message}</p>
+                    <p>{errors.instructorName?.message}</p>
                 </div>
                 <button disabled={isSubmitting}
                     className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg mb-4 hover:bg-blue-700 transition duration-300">

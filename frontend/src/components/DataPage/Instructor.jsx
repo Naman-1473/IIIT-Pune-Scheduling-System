@@ -5,8 +5,7 @@ import { useEffect } from "react";
 const Instructor = () => {
     const form = useForm({
         defaultValues:{
-            instructorId:"",
-            name:"",
+            instructorName:"",
         }
     })
     const {register,handleSubmit ,formState ,reset} = form
@@ -40,7 +39,7 @@ const Instructor = () => {
           <div className="bg-white text-center p-4 rounded-lg shadow-lg">
               <h1 className="text-2xl font-bold mb-4">Enter Instructor Data</h1>
               <form onSubmit={handleSubmit(handler)}>
-                  <div className="mb-4">
+                  {/* <div className="mb-4">
                       <label htmlFor="instructorId" className="block text-sm font-medium text-gray-700 mb-1">Instructor ID</label>
                       <input type="text" id="instructorId" 
                       {...register("instructorId",{
@@ -51,18 +50,18 @@ const Instructor = () => {
                        })}
                       className="w-full py-2 px-4 border rounded-lg" />
                       <p>{errors.instructorId?.message}</p>
-                  </div>
+                  </div> */}
                   <div className="mb-4">
-                      <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Instructor Name</label>
-                      <input type="text" id="name" 
-                      {...register("name",{
+                      <label htmlFor="instructorName" className="block text-sm font-medium text-gray-700 mb-1">Instructor Name</label>
+                      <input type="text" id="instructorName" 
+                      {...register("instructorName",{
                         required:{
                             value:true,
                             message:'Instructor Name is required',
                         },
                       })}
                       className="w-full py-2 px-4 border rounded-lg" />
-                      <p>{errors.name?.message}</p>
+                      <p>{errors.instructorName?.message}</p>
                   </div>
                   <button disabled={isSubmitting}
                   className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg mb-4 hover:bg-blue-700 transition duration-300">

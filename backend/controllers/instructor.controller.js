@@ -6,20 +6,20 @@ import {Instructor} from "../models/instructor.model.js";
 
 const setinstructor = asyncHandler( async ( req, res ) =>
 {
-    const {name, instructorId} = req.body
+    const {instructorName} = req.body
     // console.log( req.body )
-    if ( [ name, instructorId ].some( ( field ) => field?.trim() === '' ) )
+    if ( instructorName.trim() === '' )
     {
         throw new ApiError( 400, "All fields required" )
     }
 
-    const existedInstructor = await Instructor.findOne( {instructorId} )
+    const existedInstructor = await Instructor.findOne( {instructorName} )
     if ( existedInstructor )
     {
         throw new ApiError( 409, "Instructor already exist" )
     }
     const instructor = await Instructor.create( {
-        name, instructorId
+        instructorName
     } )
     const createdInstructor = await Instructor.findById( instructor._id )
     // console.log(createdInstructor)

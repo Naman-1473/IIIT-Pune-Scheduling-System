@@ -5,10 +5,10 @@ import InstructorForm from './InstructorForm.jsx'
 const Instructor = () => {
   const [isChanged,setisChanged] = useState(false)
   const [InstructorData,setInstructorData] = useState([])
-  const handleDelete = async (id,instructorId)=>{
+  const handleDelete = async (id,instructorName)=>{
     const data = {
         id:id,
-        instructorId:instructorId
+        instructorName:instructorName
     }
     try{
       const accessToken = Cookies.get('accessToken');
@@ -84,9 +84,9 @@ const Instructor = () => {
     <div className='flex h-5/6 justify-center items-center'>
         <div className='h-5/6 w-4/6'>
            <div className='flex justify-between items-center bg-gray-100 p-4 w-full rounded-lg mb-4'>
-                            <span className="w-1/6 py-2 px-4 font-bold mr-2">ID</span>
+                            {/* <span className="w-1/6 py-2 px-4 font-bold mr-2">ID</span>
                             <span className="w-1/6 py-2 px-4 font-bold mr-2"></span>
-                            <span className="w-1/6 py-2 px-4 font-bold mr-2"></span>
+                            <span className="w-1/6 py-2 px-4 font-bold mr-2"></span> */}
                             <span className="w-1/6 py-2 px-4 font-bold mr-2">NAME</span>
                             <span className="w-1/6 py-2 px-4 mr-2"></span>
                             <span className="w-1/6 py-2 px-4 mr-2"></span>

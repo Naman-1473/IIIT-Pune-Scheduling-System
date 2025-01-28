@@ -1,15 +1,9 @@
 import React, { useState } from 'react';
 
 const InstructorForm = ({ Instructor, handleUpdate, handleDelete }) => {
-    const [name, setName] = useState(Instructor.name);
+    const [name, setName] = useState(Instructor.instructorName);
     return (
         <form className='flex justify-between items-center bg-gray-100 p-4 rounded-lg mb-4'>
-            <input
-                type="text"
-                value={Instructor.instructorId}
-                className="w-1/4 py-2 px-4 border rounded-lg mr-2"
-                readOnly
-            />
             <input
                 type="text"
                 value={name}
@@ -20,7 +14,6 @@ const InstructorForm = ({ Instructor, handleUpdate, handleDelete }) => {
                 type="button"
                 onClick={() => {
                     handleUpdate({
-                        instructorId: Instructor.instructorId,
                         name: name
                     });
                 }}
@@ -31,7 +24,7 @@ const InstructorForm = ({ Instructor, handleUpdate, handleDelete }) => {
             <button
                 type="button"
                 onClick={() => {
-                    handleDelete(Instructor._id,Instructor.instructorId);
+                    handleDelete(Instructor._id,Instructor.instructorName);
                 }}
                 className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition duration-300"
             >
